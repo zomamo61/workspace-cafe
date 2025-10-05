@@ -1,123 +1,49 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>WorkSpace Café — اطلب الآن</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#120a07;
-    --panel:#241810;
-    --muted:#c7b39b;
-    --accent:#d4ac6e;
-    --card:#2f2220;
-    --card-contrast:#efebe9;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    background:linear-gradient(180deg,#120a07 0%, #19100d 100%);
-    color:#fff;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  /* header / search */
-  header{
-    position:sticky; top:0; z-index:40;
-    background:linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
-    padding:14px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between;
-    border-bottom:1px solid rgba(255,255,255,0.03);
-  }
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0}
-  .logo img{width:100%;height:100%;object-fit:cover}
-  .title{font-size:18px;color:var(--accent);font-weight:800}
-  .subtitle{color:var(--muted);font-size:13px}
-
-  .search {
-    display:flex; gap:8px; align-items:center;
-    max-width:640px; width:100%;
-  }
-  .search input{
-    width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
-    background:rgba(255,255,255,0.02); color:#fff; font-size:14px;
-  }
-
-  /* layout */
-  .wrap{max-width:1200px;margin:18px auto;padding:0 14px 100px}
-  .section-title{margin:22px 0 8px;color:var(--accent);font-size:20px;font-weight:700}
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:14px;
-  }
-  @media (max-width:1000px){ .grid{grid-template-columns:repeat(2,1fr)} }
-  @media (max-width:640px){ .grid{grid-template-columns:repeat(1,1fr)} }
-
-  /* card */
-  .card{
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;
-    border:1px solid rgba(255,255,255,0.03); min-height:230px;
-  }
-  .card .imgwrap{height:130px; border-radius:10px; overflow:hidden; background:#111; display:flex; align-items:center; justify-content:center;}
-  .card img{
-    width:100%; height:100%; object-fit:contain; display:block;
-  }
-  .card .name{font-weight:700; margin-top:6px}
-  .card .price{color:var(--muted); font-weight:700}
-  .qty-row{
-    margin-top:auto; display:flex; align-items:center; justify-content:center; gap:12px;
-  }
-
-  .qty-btn{
-    width:38px; height:38px; border-radius:8px; border:none; background:var(--accent); color:#111;
-    font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px;
-  }
-  .qty-display{
-    min-width:44px; text-align:center; font-weight:700; font-size:16px; color:var(--card-contrast);
-    background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px;
-  }
-
-  /* bottom fixed bar */
-  .bottom-bar{
-    position:fixed; left:0; right:0; bottom:0; z-index:50;
-    background:linear-gradient(90deg, rgba(18,10,7,0.95), rgba(28,18,14,0.95));
-    border-top:1px solid rgba(255,255,255,0.04);
-    padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-  }
-  .summary{
-    display:flex; gap:18px; align-items:center; color:var(--card-contrast);
-  }
-  .summary .total{font-weight:800;font-size:18px}
-  .confirm-btn{
-    background:var(--accent); color:#111; border:none; padding:10px 16px; border-radius:10px; font-weight:800;
-    cursor:pointer;
-  }
-  .confirm-btn[disabled]{opacity:0.6; cursor:not-allowed}
-
-  /* small cart preview */
-  .cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:800}
-  /* footer spacer */
-  .spacer{height:88px}
-
-  /* order summary box */
-  #orderSummaryBox{
-    max-width:960px;
-    margin:20px auto;
-    padding:14px;
-    border-radius:12px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.03);
-    color:var(--card-contrast);
-  }
-  #orderSummaryBox h3{color:var(--accent); margin:0 0 8px 0}
-  #orderSummaryList div{padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.03)}
-  #orderSummaryList div:last-child{border-bottom:none}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorkSpace Café — اطلب الآن</title>
+  <style>
+    :root{
+      --bg:#120a07; --panel:#241810; --muted:#c7b39b; --accent:#d4ac6e;
+      --card:#2f2220; --card-contrast:#efebe9;
+    }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:linear-gradient(180deg,#120a07 0%, #19100d 100%); color:#fff; -webkit-font-smoothing:antialiased;}
+    header{position:sticky;top:0;z-index:40;padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;
+      background:linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)); border-bottom:1px solid rgba(255,255,255,0.03);}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0}
+    .logo img{width:100%;height:100%;object-fit:cover}
+    .title{font-size:18px;color:var(--accent);font-weight:800}
+    .subtitle{color:var(--muted);font-size:13px}
+    .search input{width:320px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02);color:#fff;font-size:14px}
+    .wrap{max-width:1200px;margin:18px auto;padding:0 14px 140px}
+    .section-title{margin:22px 0 8px;color:var(--accent);font-size:20px;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns:repeat(1,1fr)}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.03);min-height:230px}
+    .card .imgwrap{height:130px;border-radius:10px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center}
+    .card img{width:100%;height:100%;object-fit:contain;display:block}
+    .card .name{font-weight:700;margin-top:6px}
+    .card .price{color:var(--muted);font-weight:700}
+    .qty-row{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:12px}
+    .qty-btn{width:36px;height:36px;border-radius:8px;border:none;background:var(--accent);color:#111;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .qty-display{min-width:44px;text-align:center;font-weight:700;font-size:16px;color:var(--card-contrast);background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:8px}
+    .bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:linear-gradient(90deg, rgba(18,10,7,0.95), rgba(28,18,14,0.95));border-top:1px solid rgba(255,255,255,0.04);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .summary{display:flex;gap:18px;align-items:center;color:var(--card-contrast)}
+    .summary .total{font-weight:800;font-size:18px}
+    .confirm-btn{background:var(--accent);color:#111;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer}
+    #orderSummaryBox{max-width:960px;margin:18px auto;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);color:var(--card-contrast);display:none}
+    #orderSummaryList div{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.03)}
+    #orderSummaryList div:last-child{border-bottom:none}
+    .cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:800}
+    .spacer{height:88px}
+  </style>
 </head>
 <body>
 
@@ -129,14 +55,12 @@
       <div class="subtitle">الدفع عند الاستلام · اطلب الآن</div>
     </div>
   </div>
-
   <div class="search" style="flex:1;margin-left:18px">
     <input id="searchInput" type="search" placeholder="ابحث عن مشروب أو سناك..." aria-label="بحث">
   </div>
 </header>
 
 <div class="wrap">
-
   <div>
     <div class="section-title">المشروبات</div>
     <div id="drinksGrid" class="grid"></div>
@@ -146,7 +70,6 @@
     <div class="section-title">السناكس</div>
     <div id="snacksGrid" class="grid"></div>
   </div>
-
 </div>
 
 <div class="spacer"></div>
@@ -162,17 +85,17 @@
   </div>
 </div>
 
-<!-- order summary area (starts hidden) -->
-<div id="orderSummaryBox" style="display:none;">
+<!-- order summary area -->
+<div id="orderSummaryBox">
   <h3>تفاصيل الطلب</h3>
   <div id="orderSummaryList"></div>
 </div>
 
 <script>
-/* ----------------- إعداد (ضع رابط Web App هنا) ----------------- */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby11lTAeS9bnRkaVOFEZXtfUW86-xloo8Y8bHXlBd6PbgIMYS-gWvcn6e7jg02kLuik/exec";
+/* ============ رابط Web App (انسخ الرابط الذي نشرته) ============ */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyib6cffSjMYo2zu5itDj3E0xuGhZmEcBgXxSGYwQYB_QRa7ROamyb7R3oVmFJdhSNfPw/exec";
 
-/* ----------------- منتجات (المشروبات) — كامل الأصناف ----------------- */
+/* ============ منتجات: ضع هنا كل المنتجات (أو عدّل كما تريد) ============ */
 const drinks = [
   {name:"كوفي بريك 2/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
   {name:"كوفي بريك3/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
@@ -207,7 +130,6 @@ const drinks = [
   {name:"عصير مكس جهينه", price:15, img:"https://www.juhayna.com/app/uploads/2018/12/1595866123_393_2126394_chocomixside2-400x794.png"}
 ];
 
-/* ----------------- سناكس (كامل الأصناف) ----------------- */
 const snacks = [
   {name:"كبك كيك تودو", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
   {name:"كبك كيك ريد", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
@@ -222,7 +144,6 @@ const snacks = [
   {name:"توينكزسوبر ف", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOUVFeDpsB385g70ET4FKmMxymSejHEu8_VyKmWYY6l644UvaugADdAw1VUBd1MTpplY&usqp=CAU"},
   {name:"توينكز دبل ك", price:10, img:"https://m.media-amazon.com/images/I/6144UtFOGvL._AC_SX679_.jpg"},
   {name:"توينكز ايسنج", price:10, img:"https://m.media-amazon.com/images/I/618VfzhZ6lL._AC_SX679_.jpg"},
-  {name:"توينكز دبل ك س", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRS-Z2c36vyoO9qx1RH00T8MKOw9D5kC6JtYQ&s"},
   {name:"هوهوز ش كبير", price:10, img:"https://cdn.mafrservices.com/sys-master-root/hf9/h8a/50537935929374/617873_main.jpg?im=Resize=480"},
   {name:"شيبسي روو", price:15, img:"https://images-na.ssl-images-amazon.com/images/I/618+by-jxSL._SL500_._AC_SL500_.jpg"},
   {name:"بيك رولز ك", price:10, img:"https://m.media-amazon.com/images/I/71FBAhOZnVL._AC_SX679_.jpg"},
@@ -251,26 +172,26 @@ const snacks = [
   {name:"اندومي صغير", price:5, img:"https://m.media-amazon.com/images/I/41f-8OER9bL._AC_.jpg"}
 ];
 
-/* ----------------- إدارة حالة الكميات و السلة ----------------- */
+/* ============ حالة السلة وDOM references ============ */
+let state = {}; // { "اسم المنتج": {qty, price, type} }
 const drinksGrid = document.getElementById('drinksGrid');
 const snacksGrid = document.getElementById('snacksGrid');
 const itemsCountEl = document.getElementById('itemsCount');
 const totalAmountEl = document.getElementById('totalAmount');
 const confirmOrderBtn = document.getElementById('confirmOrder');
 const searchInput = document.getElementById('searchInput');
+const orderSummaryBox = document.getElementById('orderSummaryBox');
+const orderSummaryList = document.getElementById('orderSummaryList');
 
-let state = {}; // { "اسم المنتج": qty, ... }
-
-/* render single card with qty controls under the product */
+/* ============ وظائف مساعدة ============ */
 function createCardHTML(item, type){
-  // unique id safe
   const id = encodeURIComponent(item.name).replace(/%/g,'');
   return `
     <div class="card" data-name="${item.name}" data-type="${type}">
       <div class="imgwrap"><img src="${item.img}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1492724441997-5dc865305da7?q=80&w=1200&auto=format&fit=crop'"></div>
       <div class="name">${item.name}</div>
       <div class="price">${item.price} ج.م</div>
-      <div class="qty-row" style="margin-top:8px">
+      <div class="qty-row">
         <button class="qty-btn" data-action="dec" data-name="${item.name}">−</button>
         <div class="qty-display" id="qty_${id}">0</div>
         <button class="qty-btn" data-action="inc" data-name="${item.name}">+</button>
@@ -279,11 +200,9 @@ function createCardHTML(item, type){
   `;
 }
 
-/* render lists */
 function renderAll(){
-  drinksGrid.innerHTML = drinks.map(d => createCardHTML(d,'drink')).join('');
-  snacksGrid.innerHTML = snacks.map(s => createCardHTML(s,'snack')).join('');
-  // attach listeners
+  drinksGrid.innerHTML = drinks.map(d => createCardHTML(d,'مشروب')).join('');
+  snacksGrid.innerHTML = snacks.map(s => createCardHTML(s,'سناك')).join('');
   document.querySelectorAll('.qty-btn').forEach(btn=>{
     btn.addEventListener('click', (e)=>{
       const action = btn.dataset.action;
@@ -293,82 +212,71 @@ function renderAll(){
   });
 }
 
-/* change quantity function updates state and UI */
+function findPrice(name){
+  const f1 = drinks.find(d=>d.name===name);
+  if(f1) return f1.price;
+  const f2 = snacks.find(s=>s.name===name);
+  if(f2) return f2.price;
+  return 0;
+}
+function findType(name){
+  const f1 = drinks.find(d=>d.name===name);
+  if(f1) return 'مشروب';
+  const f2 = snacks.find(s=>s.name===name);
+  if(f2) return 'سناك';
+  return '';
+}
+
 function changeQuantity(name, delta){
-  if(!state[name]) state[name]=0;
-  state[name] = Math.max(0, state[name] + delta);
-  // update card display
+  if(!state[name]) state[name] = { qty:0, price: findPrice(name), type: findType(name) };
+  state[name].qty = Math.max(0, state[name].qty + delta);
   const id = encodeURIComponent(name).replace(/%/g,'');
   const el = document.getElementById('qty_'+id);
-  if(el) el.textContent = state[name];
-  // update totals
+  if(el) el.textContent = state[name].qty;
   updateSummary();
 }
 
-/* compute totals and items count */
 function updateSummary(){
-  let total = 0;
-  let itemsCount = 0;
-  // find price by searching arrays
-  const findPrice = (n)=>{
-    const f1 = drinks.find(d=>d.name===n);
-    if(f1) return f1.price;
-    const f2 = snacks.find(s=>s.name===n);
-    if(f2) return f2.price;
-    return 0;
-  };
-  for(const [name, qty] of Object.entries(state)){
-    if(qty<=0) continue;
-    itemsCount += qty;
-    const price = findPrice(name);
-    total += price * qty;
+  let total = 0, itemsCount = 0;
+  for(const [name, obj] of Object.entries(state)){
+    if(obj.qty <= 0) continue;
+    itemsCount += obj.qty;
+    total += obj.qty * obj.price;
   }
   itemsCountEl.textContent = itemsCount;
   totalAmountEl.textContent = total;
 }
 
-/* build order summary (lines + total) */
 function buildOrderSummaryText(){
-  let lines = [];
-  const findPrice = (n)=>{
-    const f1 = drinks.find(d=>d.name===n);
-    if(f1) return f1.price;
-    const f2 = snacks.find(s=>s.name===n);
-    if(f2) return f2.price;
-    return 0;
-  };
+  const lines = [];
   let total = 0;
-  for(const [name, qty] of Object.entries(state)){
-    if(qty<=0) continue;
-    const price = findPrice(name);
-    const lineTotal = price * qty;
+  for(const [name, obj] of Object.entries(state)){
+    if(obj.qty <= 0) continue;
+    const lineTotal = obj.qty * obj.price;
     total += lineTotal;
-    lines.push(`${name} x${qty} — ${lineTotal} ج.م`);
+    lines.push(`${name} x${obj.qty} — ${lineTotal} ج.م (السعر: ${obj.price} ج.م, النوع: ${obj.type})`);
   }
   return { lines, total };
 }
 
-/* confirm order: ask اسم اختياري، عرض الأسفل، وإرسال إلى Web App (بدون رقم هاتف) */
+/* ============ حدث التأكيد (إرسال إلى Web App) ============ */
 confirmOrderBtn.addEventListener('click', async ()=>{
   const summary = buildOrderSummaryText();
   if(summary.lines.length === 0){ alert('السلة فارغة — اضف منتجات أولاً'); return; }
-  const customerName = prompt('ادخل اسم العميل (اختياري):') || 'بدون اسم';
 
-  // عرض في الصندوق الأسفل
-  const box = document.getElementById('orderSummaryBox');
-  const list = document.getElementById('orderSummaryList');
-  list.innerHTML = summary.lines.map(line => `<div>${line}</div>`).join('') +
-                   `<div style="margin-top:10px;font-weight:bold;color:var(--accent)">الإجمالي: ${summary.total} ج.م</div>`;
-  box.style.display = 'block';
-  // Scroll to box (تحسين تجربة المستخدم)
-  box.scrollIntoView({behavior:'smooth', block:'center'});
+  const customerName = prompt('ادخل اسم العميل (اختياري):') || 'عميل مجهول';
+
+  // عرض الأسفل
+  orderSummaryList.innerHTML = summary.lines.map(l=>`<div>${l}</div>`).join('') +
+                               `<div style="margin-top:10px;font-weight:bold;color:var(--accent)">الإجمالي: ${summary.total} ج.م</div>`;
+  orderSummaryBox.style.display = 'block';
+  orderSummaryBox.scrollIntoView({behavior:'smooth', block:'center'});
 
   const payload = {
-    timestamp: new Date().toLocaleString('en-GB'),
     name: customerName.trim(),
-    phone: '', // رقم الهاتف محذوف
-    items: summary.lines.join(' | '),
-    subtotal: summary.total,
+    details: summary.lines.join(' | '),
+    type: 'متعدد',
+    price: summary.total,
     total: summary.total
   };
 
@@ -378,34 +286,41 @@ confirmOrderBtn.addEventListener('click', async ()=>{
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
-    if(res.ok){
-      alert('✅ تم إرسال الطلب بنجاح! سيتم الدفع عند الاستلام.');
-      // reset quantities and state
+
+    if(!res.ok){
+      const text = await res.text().catch(()=> '');
+      console.error('Server responded with status', res.status, text);
+      alert('حدث خطأ أثناء الإرسال. رمز الحالة: ' + res.status);
+      return;
+    }
+
+    const result = await res.json().catch(()=> null);
+    if(result && result.status === 'success'){
+      alert('✅ تم إرسال الطلب بنجاح! رقم الطلب: ' + (result.orderId || '—'));
+      // إعادة تعيين الواجهة
       state = {};
       document.querySelectorAll('[id^="qty_"]').forEach(el=>el.textContent = '0');
       updateSummary();
     } else {
-      console.error('Send failed', res.status);
-      alert('حدث خطأ أثناء الإرسال. تأكد من إعداد Web App في Google Apps Script.');
+      console.error('Server returned error', result);
+      alert('حدث خطأ من الخادم: ' + (result && result.message ? result.message : 'غير معروف'));
     }
   } catch(err){
-    console.error(err);
+    console.error('Fetch error', err);
     alert('فشل الاتصال بالخادم. تحقق من الإنترنت وإعداد Web App.');
   }
 });
 
-/* search functionality */
+/* ============ وظيفة البحث ============ */
 searchInput.addEventListener('input', (e)=>{
   const q = e.target.value.trim().toLowerCase();
-  // filter cards by name
   document.querySelectorAll('.card').forEach(card=>{
-    const name = card.dataset.name || '';
-    if(name.toLowerCase().includes(q)) card.style.display = '';
-    else card.style.display = 'none';
+    const name = (card.dataset.name || '').toLowerCase();
+    card.style.display = name.includes(q) ? '' : 'none';
   });
 });
 
-/* initial render */
+/* ============ init ============ */
 renderAll();
 updateSummary();
 
