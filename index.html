@@ -6,14 +6,26 @@
   <title>WorkSpace Café — اطلب الآن</title>
   <style>
     :root{
-      --bg:#120a07; --panel:#241810; --muted:#c7b39b; --accent:#d4ac6e;
-      --card:#2f2220; --card-contrast:#efebe9;
+      --bg:#120a07;
+      --panel:#241810;
+      --muted:#c7b39b;
+      --accent:#d4ac6e;
+      --card:#2f2220;
+      --card-contrast:#efebe9;
     }
     *{box-sizing:border-box}
-    body{ margin:0; font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-      background:linear-gradient(180deg,#120a07 0%, #19100d 100%); color:#fff; -webkit-font-smoothing:antialiased;}
-    header{position:sticky;top:0;z-index:40;padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;
-      background:linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)); border-bottom:1px solid rgba(255,255,255,0.03);}
+    body{
+      margin:0;
+      font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:linear-gradient(180deg,#120a07 0%, #19100d 100%);
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+    }
+    header{
+      position:sticky;top:0;z-index:40;padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;
+      background:linear-gradient(90deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
     .brand{display:flex;gap:12px;align-items:center}
     .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0}
     .logo img{width:100%;height:100%;object-fit:cover}
@@ -26,7 +38,11 @@
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     @media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:640px){.grid{grid-template-columns:repeat(1,1fr)}}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.03);min-height:230px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;
+      border:1px solid rgba(255,255,255,0.03);min-height:230px;
+    }
     .card .imgwrap{height:130px;border-radius:10px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center}
     .card img{width:100%;height:100%;object-fit:contain;display:block}
     .card .name{font-weight:700;margin-top:6px}
@@ -44,8 +60,13 @@
     .cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:800}
     .spacer{height:88px}
     .btn-disabled{opacity:0.6;cursor:not-allowed}
-    .loader{display:inline-block;border:3px solid rgba(0,0,0,0.0);border-left-color:rgba(0,0,0,0.1);width:18px;height:18px;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:8px;background:linear-gradient(90deg,#fff,#ddd);opacity:0.9}
+    .loader{display:inline-block;border:3px solid rgba(0,0,0,0);border-left-color:rgba(0,0,0,0.1);width:18px;height:18px;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:8px;background:linear-gradient(90deg,#fff,#ddd);opacity:0.9}
     @keyframes spin{to{transform:rotate(360deg)}}
+    /* small responsive tweaks */
+    @media (max-width:480px){
+      .search input{width:100%}
+      .logo{width:48px;height:48px}
+    }
   </style>
 </head>
 <body>
@@ -73,6 +94,11 @@
     <div class="section-title">السناكس</div>
     <div id="snacksGrid" class="grid"></div>
   </div>
+
+  <div id="orderSummaryBox">
+    <h3>تفاصيل الطلب</h3>
+    <div id="orderSummaryList"></div>
+  </div>
 </div>
 
 <div class="spacer"></div>
@@ -88,91 +114,25 @@
   </div>
 </div>
 
-<!-- order summary area -->
-<div id="orderSummaryBox">
-  <h3>تفاصيل الطلب</h3>
-  <div id="orderSummaryList"></div>
-</div>
-
 <script>
-/* ============ رابط Web App (ضع الرابط الجديد هنا) ============ */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby67YzkcDoAMAZnUQYjT7CCM7YSljdgRTA_r_wWTTSPZd2B_gwgo_y-o2aZ5ywa6-GxPg/exec";
+/* ============ رابط Web App (محدث) ============ */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbySdCfmtIGtCjT3ZdMJ4TMhaY3-D7qDN1IV5I3it153oK7gYIv7FYc6X7K8tTS4stuAPQ/exec";
 
-/* ============ منتجات ============ */
+/* ============ منتجات: عدّل إن أردت ============ */
 const drinks = [
   {name:"كوفي بريك 2/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
   {name:"كوفي بريك3/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
   {name:"كابتشينو موكا بونجورنو", price:30, img:"https://kitchen.sayidaty.net/uploads/small/bd/bd6fe84636e832188966978d0b33df89_w240_h240.jpg"},
   {name:"كابتشينو بندق", price:30, img:"https://png.pngtree.com/background/20230606/original/pngtree-cappuccino-with-hazelnuts-on-wooden-background-cappuccino-with-chocolate-powder-on-picture-image_2877924.jpg"},
-  {name:"كابتشينوموكا بريك", price:30, img:"https://kitchen.sayidaty.net/uploads/small/7f/7f77c9da149c6b1ade121eaafb8b2d32_w240_h240.jpg"},
   {name:"مشروب كاكاو", price:20, img:"https://kitchen.sayidaty.net/uploads/small/07/074968944610cfa33478d4624f3acf6c_w750_h750.jpg"},
-  {name:"قرفه", price:15, img:"https://www.mklat.com/wp-content/uploads/images-2020-02-07T132118.495.jpeg"},
-  {name:"ينسون ليمون", price:15, img:"https://img.lahloba.com/news/medium/88024614-091a-4d49-b092-3ac8c0acc7c2.jpg"},
-  {name:"جنزبيل", price:15, img:"https://cdn.salla.sa/yoeEO/ll7lBNPY1Y5zNevmsPBGPeNmMDTdZ3WOaAxsaE37.jpg"},
-  {name:"قهوه بندق", price:30, img:"https://static.webteb.net/images/content/tbl_articles_article_23876_135217fbcdf-3d66-4ed6-8186-02e4ca3ede72.jpg"},
-  {name:"شاي فتله", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLuxjxoldW8YwXW9u16XAY7Mts3vxFITLC5w-LnAXxnEd7py4hfqMNx0Yd3TKbleQbNSc&usqp=CAU"},
-  {name:"شاي", price:10, img:"https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2AAE/production/_108962901_hi053405374.jpg.webp"},
   {name:"قهوه بسيطة", price:25, img:"https://i1.sndcdn.com/artworks-000219824277-bq4b2z-t500x500.jpg"},
-  {name:"قهوه وسط", price:25, img:"https://media.dotmsr.com/large/20180510012305235.jpg"},
-  {name:"قهوه فاتح", price:25, img:"https://cdn.altibbi.com/cdn/cache/xlarge/image/2020/08/31/26e99794e2cbc565a80ef65d323fd976.png.webp"},
-  {name:"قهوه اسبيرسو", price:30, img:"https://cdn.salla.sa/zvPYx/bxmAiNbJcGBNoOPBs9O9RlRyxb5no55zJn3TBMPE.jpg"},
-  {name:"سن توب برتقال", price:15, img:"https://m.media-amazon.com/images/I/916EviIV6mL._UF350,350_QL80_.jpg"},
-  {name:"سن توب مانجا", price:15, img:"https://gomla-eg.com/image/cache/catalog/products/115.2.png-242x433.png.webp"},
-  {name:"سن توب ليمون", price:15, img:"https://cdn.mafrservices.com/pim-content/EGY/media/product/645014/1753792204/645014_main.jpg"},
-  {name:"جهينه جوافه", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h56/h7e/26751925026846/3701_main.jpg"},
-  {name:"جهينه تفاح", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h75/h81/26751941378078/433828_main.jpg"},
-  {name:"في كولا", price:15, img:"https://m.media-amazon.com/images/I/61dmTQPVy7L._UF350,350_QL80_.jpg"},
-  {name:"في كولا توت", price:15, img:"https://mir-s3-cdn-cf.behance.net/projects/404/b3baf6172080833.Y3JvcCwxOTIzLDE1MDQsNzEsMTYx.jpg"},
-  {name:"تويست", price:15, img:"https://m.media-amazon.com/images/I/518JZuXq+rL._UF894,1000_QL80_.jpg"},
-  {name:"سباتس برتقال", price:12, img:"https://mir-s3-cdn-cf.behance.net/projects/404/141a34190709179.Y3JvcCwyMDg4LDE2MzMsMCw1NjM.jpg"},
-  {name:"مياه", price:6, img:"https://www.hayat.sa.com/hayat/img/slide1.jpg"},
-  {name:"نعناع", price:15, img:"https://t4.ftcdn.net/jpg/00/98/14/57/240_F_98145756_6KE4xOrzwxOOXBg3jNiy6ibih6LZNdYK.jpg"},
-  {name:"كركديه", price:10, img:"https://t4.ftcdn.net/jpg/03/04/01/51/240_F_304015124_A0kGlJa8qRpIEfJPPTanpClZ9dHEuqpu.jpg"},
-  {name:"ليمون نعناع", price:20, img:"https://t3.ftcdn.net/jpg/02/91/91/98/240_F_291919807_sNDDdCxZMztrZATDzG0vHpB3uYet3Zsm.jpg"},
-  {name:"في كولا سفن", price:15, img:"https://bf1af2.akinoncloudcdn.com/products/2025/03/25/356847/382ee71e-19bf-4744-b872-56d816980b0e_size3840_cropCenter.jpg"},
-  {name:"عصير مكس جهينه", price:15, img:"https://www.juhayna.com/app/uploads/2018/12/1595866123_393_2126394_chocomixside2-400x794.png"}
+  {name:"شاي", price:10, img:"https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2AAE/production/_108962901_hi053405374.jpg.webp"}
 ];
 
 const snacks = [
-  {name:"كبك كيك تودو", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
-  {name:"كبك كيك ريد", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
-  {name:"هوهوز شيكولاته", price:10, img:"https://m.media-amazon.com/images/I/61xJwOh51DL._UF894,1000_QL80_.jpg"},
-  {name:"هوهوز فراوله", price:10, img:"https://m.media-amazon.com/images/S/aplus-media/sota/629e0dad-619f-453a-9b6d-593c81b0dafb.__CR0,0,300,300_PT0_SX300_V1___.jpg"},
-  {name:"هوهوز كريمه", price:10, img:"https://m.media-amazon.com/images/S/aplus-media/sota/629e0dad-619f-453a-9b6d-593c81b0dafb.__CR0,0,300,300_PT0_SX300_V1___.jpg"},
-  {name:"تودو بومب", price:15, img:"https://cdn.mafrservices.com/sys-master-root/h7c/h47/49986430074910/450292_main.jpg"},
-  {name:"تودو براوني", price:15, img:"https://thetasteofegypt.com/cdn/shop/products/file.png?v=1626159154"},
-  {name:"توينكز ش وك", price:10, img:"https://images-na.ssl-images-amazon.com/images/I/31dY8v2lqZL._SL500_._AC_SL500_.jpg"},
-  {name:"توينكز ف وك", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOUVFeDpsB385g70ET4FKmMxymSejHEu8_VyKmWYY6l644UvaugADdAw1VUBd1MTpplY&usqp=CAU"},
-  {name:"توينكز سوبر ش", price:10, img:"https://images-na.ssl-images-amazon.com/images/I/31dY8v2lqZL._SL500_._AC_SL500_.jpg"},
-  {name:"توينكزسوبر ف", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOUVFeDpsB385g70ET4FKmMxymSejHEu8_VyKmWYY6l644UvaugADdAw1VUBd1MTpplY&usqp=CAU"},
+  {name:"اندومي صغير", price:5, img:"https://m.media-amazon.com/images/I/41f-8OER9bL._AC_.jpg"},
   {name:"توينكز دبل ك", price:10, img:"https://m.media-amazon.com/images/I/6144UtFOGvL._AC_SX679_.jpg"},
-  {name:"توينكز ايسنج", price:10, img:"https://m.media-amazon.com/images/I/618VfzhZ6lL._AC_SX679_.jpg"},
-  {name:"هوهوز ش كبير", price:10, img:"https://cdn.mafrservices.com/sys-master-root/hf9/h8a/50537935929374/617873_main.jpg?im=Resize=480"},
-  {name:"شيبسي روو", price:15, img:"https://images-na.ssl-images-amazon.com/images/I/618+by-jxSL._SL500_._AC_SL500_.jpg"},
-  {name:"بيك رولز ك", price:10, img:"https://m.media-amazon.com/images/I/71FBAhOZnVL._AC_SX679_.jpg"},
-  {name:"بيك رولز جبنه", price:10, img:"https://m.media-amazon.com/images/I/71L42GIxo6L._UF894,1000_QL80_.jpg"},
-  {name:"بيك رولز شطه", price:10, img:"https://m.media-amazon.com/images/I/71RS95-QpsL._UF894,1000_QL80_.jpg"},
-  {name:"فرسكا فنجرز", price:10, img:"https://cdn.mafrservices.com/pim-content/EGY/media/product/636719/1733151604/636719_main.jpg"},
-  {name:"فرسكا ستكس", price:5, img:"https://m.media-amazon.com/images/I/61OUCDWipQL.jpg"},
-  {name:"اونيرو شوكو لافا", price:10, img:"https://m.media-amazon.com/images/I/71vohmufzML._UF894,1000_QL80_.jpg"},
-  {name:"اونيرو لوتس", price:10, img:"https://m.media-amazon.com/images/I/911UEaEFaUL._AC_UL480_FMwebp_QL65_.jpg"},
-  {name:"اونيرو بيضاء", price:10, img:"https://m.media-amazon.com/images/I/71a8qtaPWBL._UF894,1000_QL80_.jpg"},
-  {name:"اونيرو ساده", price:10, img:"https://m.media-amazon.com/images/I/81hNVPF+EwL._AC_UL480_FMwebp_QL65_.jpg"},
-  {name:"فرسكا ش", price:10, img:"https://www.qebox.app/qebox/wp-content/uploads/2025/05/Untitled-1-0%D9%A1-6-600x600.png"},
-  {name:"فريسكا بلوك", price:8, img:"https://cdn.mafrservices.com/sys-master-root/h98/h44/49986436595742/545032_main.jpg"},
-  {name:"مولتو شكولاته", price:10, img:"https://m.media-amazon.com/images/I/71rfa+-jI1L._UF894,1000_QL80_.jpg"},
-  {name:"مولتو فراوله", price:10, img:"https://m.media-amazon.com/images/I/51WfZ3Y5PML._UF894,1000_QL80_.jpg"},
-  {name:"مولتو ميكس", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h56/h71/63006024138782/629904_main.jpg"},
-  {name:"فيشار بيتزا", price:10, img:"https://m.media-amazon.com/images/I/61STd0taBTL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار جبنه", price:10, img:"https://m.media-amazon.com/images/I/61HheiXpeXL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار جبنه متبله", price:10, img:"https://m.media-amazon.com/images/I/610q6LBSbZL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار طماطم", price:10, img:"https://m.media-amazon.com/images/I/61rKSJ3ZKHL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار شطه", price:10, img:"https://m.media-amazon.com/images/I/613w7sXm2rL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار باربكيو", price:10, img:"https://m.media-amazon.com/images/I/41sBCXI4AeS._UF894,1000_QL80_.jpg"},
-  {name:"سناكس", price:10, img:"https://m.media-amazon.com/images/I/61PXQpibuBL._UF894,1000_QL80_.jpg"},
-  {name:"شيبسي soul ملح", price:10, img:"https://m.media-amazon.com/images/I/71vIsp2kr2L._AC_SY300_SX300_QL70_ML2_.jpg"},
-  {name:"اندومي كبير", price:10, img:"https://m.media-amazon.com/images/I/61I5xrMOS7L._AC_SY300_SX300_QL70_ML2_.jpg"},
-  {name:"اندومي صغير", price:5, img:"https://m.media-amazon.com/images/I/41f-8OER9bL._AC_.jpg"}
+  {name:"بيك رولز جبنه", price:10, img:"https://m.media-amazon.com/images/I/71L42GIxo6L._UF894,1000_QL80_.jpg"}
 ];
 
 /* ============ حالة السلة وDOM references ============ */
@@ -186,6 +146,7 @@ const searchInput = document.getElementById('searchInput');
 const orderSummaryBox = document.getElementById('orderSummaryBox');
 const orderSummaryList = document.getElementById('orderSummaryList');
 
+/* ============ وظائف مساعدة ============ */
 function createCardHTML(item, type){
   const id = encodeURIComponent(item.name).replace(/%/g,'');
   return `
@@ -302,7 +263,6 @@ confirmOrderBtn.addEventListener('click', async ()=>{
     const res = await fetch(WEB_APP_URL, {
       method: 'POST',
       body: form
-      // لا تضف headers: {'Content-Type': 'application/json'}  -> يسبب preflight
     });
 
     if(!res.ok){
@@ -312,7 +272,6 @@ confirmOrderBtn.addEventListener('click', async ()=>{
       return;
     }
 
-    // Google Apps Script عادة يعيد JSON string، لذا نجرب قراءته
     const result = await res.json().catch(()=> null);
     if(result && result.status === 'success'){
       alert('✅ تم إرسال الطلب بنجاح! رقم الطلب: ' + (result.orderId || '—'));
@@ -323,7 +282,7 @@ confirmOrderBtn.addEventListener('click', async ()=>{
       orderSummaryBox.style.display = 'none';
     } else {
       console.error('Server returned error', result);
-      alert('حدث خطأ من الخادم: ' + (result && result.message ? result.message : 'الاستجابة غير مفهومة') + '\nراجع Console.');
+      alert('حدث خطأ من الخادم: ' + (result && result.message ? result.message : 'غير معروف'));
     }
   } catch(err){
     console.error('Fetch error', err);
@@ -349,8 +308,8 @@ searchInput.addEventListener('input', (e)=>{
 /* ============ init ============ */
 renderAll();
 updateSummary();
-
 </script>
 </body>
 </html>
+
 
