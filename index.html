@@ -1,327 +1,192 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>WorkSpace Café — اطلب الآن</title>
   <style>
-    :root{--bg:#120a07;--accent:#d4ac6e;--muted:#c7b39b;--card-contrast:#efebe9}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:"Tajawal",system-ui,Roboto,Arial;background:linear-gradient(180deg,#120a07,#19100d);color:#fff}
-    header{padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.25)}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:10px;overflow:hidden}
-    .logo img{width:100%;height:100%;object-fit:cover}
-    .title{font-size:18px;color:var(--accent);font-weight:800}
-    .wrap{max-width:1200px;margin:18px auto;padding:0 14px 140px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:640px){.grid{grid-template-columns:repeat(1,1fr)}}
-    .card{background:rgba(255,255,255,0.02);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:230px}
-    .imgwrap{height:130px;border-radius:10px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center}
-    .qty-row{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:12px}
-    .qty-btn{width:36px;height:36px;border-radius:8px;border:none;background:var(--accent);color:#111;font-weight:800;cursor:pointer}
-    .qty-display{min-width:44px;text-align:center;font-weight:700;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.02)}
-    .bottom-bar{position:fixed;left:0;right:0;bottom:0;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.9)}
-    .confirm-btn{background:var(--accent);color:#111;border:none;padding:10px 16px;border-radius:10px;font-weight:800;cursor:pointer}
-    .cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:800}
-    #orderSummaryBox{max-width:960px;margin:18px auto;padding:14px;border-radius:12px;background:rgba(255,255,255,0.02);display:none}
-    .btn-disabled{opacity:0.6;cursor:not-allowed}
-    .loader{display:inline-block;border-radius:50%;width:16px;height:16px;animation:spin 1s linear infinite;background:linear-gradient(90deg,#fff,#ddd);margin-left:8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
+    body{
+      margin:0;
+      font-family:"Tajawal",sans-serif;
+      background:#120a07;
+      color:#fff;
+    }
+    header{
+      background:#1c120e;
+      padding:10px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      position:sticky;top:0;z-index:100;
+    }
+    .wrap{max-width:1000px;margin:auto;padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+    .card{background:#2a1e1a;padding:12px;border-radius:10px;text-align:center}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:10px}
+    .qty-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:8px}
+    .qty-btn{background:#d4ac6e;color:#000;border:none;border-radius:8px;width:32px;height:32px;font-weight:bold;cursor:pointer}
+    .qty-display{min-width:40px;font-weight:bold}
+    .bottom-bar{position:fixed;left:0;right:0;bottom:0;background:#1c120e;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+    .confirm-btn{background:#d4ac6e;color:#000;border:none;border-radius:8px;padding:8px 14px;font-weight:bold;cursor:pointer}
+    #orderSummaryBox{background:#241810;border-radius:12px;padding:14px;margin-top:20px;display:none}
+    #orderSummaryList div{padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
+    #orderSummaryList div:last-child{border-bottom:none}
   </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <div class="logo"><img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=800&auto=format&fit=crop" alt="logo"></div>
-    <div>
-      <div class="title">WorkSpace Café</div>
-      <div class="subtitle">الدفع عند الاستلام · اطلب الآن</div>
-    </div>
-  </div>
-  <div style="flex:1;margin-left:18px">
-    <input id="searchInput" type="search" placeholder="ابحث عن مشروب أو سناك..." style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:#fff">
-  </div>
+  <h2>☕ WorkSpace Café</h2>
+  <input id="searchInput" placeholder="ابحث عن منتج..." style="padding:6px 10px;border-radius:8px;border:none;outline:none">
 </header>
 
 <div class="wrap">
-  <div>
-    <div style="color:var(--accent);font-weight:700;margin:18px 0">المشروبات</div>
-    <div id="drinksGrid" class="grid"></div>
-  </div>
+  <h3>المشروبات</h3>
+  <div id="drinksGrid" class="grid"></div>
 
-  <div style="margin-top:18px">
-    <div style="color:var(--accent);font-weight:700;margin:18px 0">السناكس</div>
-    <div id="snacksGrid" class="grid"></div>
-  </div>
+  <h3>السناكس</h3>
+  <div id="snacksGrid" class="grid"></div>
 
   <div id="orderSummaryBox">
     <h3>تفاصيل الطلب</h3>
     <div id="orderSummaryList"></div>
+    <div id="orderTotal" style="margin-top:10px;font-weight:bold;color:#d4ac6e"></div>
+    <button id="sendOrder" class="confirm-btn" style="margin-top:12px">تأكيد الإرسال إلى الكافيه</button>
   </div>
 </div>
 
-<div style="height:88px"></div>
-
-<!-- bottom fixed summary -->
 <div class="bottom-bar">
-  <div>العناصر: <span id="itemsCount" class="cart-count">0</span> — الإجمالي: <span id="totalAmount">0</span> ج.م</div>
-  <div><button id="confirmOrder" class="confirm-btn">تأكيد الطلب</button></div>
+  <div>الإجمالي: <span id="totalAmount">0</span> ج.م</div>
+  <button id="confirmOrder" class="confirm-btn">عرض تفاصيل الطلب</button>
 </div>
 
 <script>
-/* ============ رابط Web App ============ */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyh6o5k-2jzRzBt46PGuA_o3Ml8t2Nfy4nHNwSAWwEWi4JfN47MRQO65bYMGpH4Eq9wbQ/exec";
+/* رابط السكربت */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbySdCfmtIGtCjT3ZdMJ4TMhaY3-D7qDN1IV5I3it153oK7gYIv7FYc6X7K8tTS4stuAPQ/exec";
 
-/* ============ منتجات كاملة كما زودتني بها ============ */
-/* (أضع هنا جزء من قائمتك — إن أردت أي تعديل بالأسامي أو الأسعار حدثني) */
+/* المنتجات */
 const drinks = [
-  {name:"كوفي بريك 2/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
-  {name:"كوفي بريك3/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
+  {name:"كوفي بريك 2/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80"},
+  {name:"كوفي بريك3/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80"},
   {name:"كابتشينو موكا بونجورنو", price:30, img:"https://kitchen.sayidaty.net/uploads/small/bd/bd6fe84636e832188966978d0b33df89_w240_h240.jpg"},
   {name:"كابتشينو بندق", price:30, img:"https://png.pngtree.com/background/20230606/original/pngtree-cappuccino-with-hazelnuts-on-wooden-background-cappuccino-with-chocolate-powder-on-picture-image_2877924.jpg"},
-  {name:"كابتشينوموكا بريك", price:30, img:"https://kitchen.sayidaty.net/uploads/small/7f/7f77c9da149c6b1ade121eaafb8b2d32_w240_h240.jpg"},
   {name:"مشروب كاكاو", price:20, img:"https://kitchen.sayidaty.net/uploads/small/07/074968944610cfa33478d4624f3acf6c_w750_h750.jpg"},
-  {name:"قرفه", price:15, img:"https://www.mklat.com/wp-content/uploads/images-2020-02-07T132118.495.jpeg"},
-  {name:"ينسون ليمون", price:15, img:"https://img.lahloba.com/news/medium/88024614-091a-4d49-b092-3ac8c0acc7c2.jpg"},
-  {name:"جنزبيل", price:15, img:"https://cdn.salla.sa/yoeEO/ll7lBNPY1Y5zNevmsPBGPeNmMDTdZ3WOaAxsaE37.jpg"},
-  {name:"قهوه بندق", price:30, img:"https://static.webteb.net/images/content/tbl_articles_article_23876_135217fbcdf-3d66-4ed6-8186-02e4ca3ede72.jpg"},
-  {name:"شاي فتله", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLuxjxoldW8YwXW9u16XAY7Mts3vxFITLC5w-LnAXxnEd7py4hfqMNx0Yd3TKbleQbNSc&usqp=CAU"},
-  {name:"شاي", price:10, img:"https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2AAE/production/_108962901_hi053405374.jpg.webp"},
   {name:"قهوه بسيطة", price:25, img:"https://i1.sndcdn.com/artworks-000219824277-bq4b2z-t500x500.jpg"},
-  {name:"قهوه وسط", price:25, img:"https://media.dotmsr.com/large/20180510012305235.jpg"},
-  {name:"قهوه فاتح", price:25, img:"https://cdn.altibbi.com/cdn/cache/xlarge/image/2020/08/31/26e99794e2cbc565a80ef65d323fd976.png.webp"},
-  {name:"قهوه اسبيرسو", price:30, img:"https://cdn.salla.sa/zvPYx/bxmAiNbJcGBNoOPBs9O9RlRyxb5no55zJn3TBMPE.jpg"},
-  {name:"سن توب برتقال", price:15, img:"https://m.media-amazon.com/images/I/916EviIV6mL._UF350,350_QL80_.jpg"},
-  {name:"سن توب مانجا", price:15, img:"https://gomla-eg.com/image/cache/catalog/products/115.2.png-242x433.png.webp"},
-  {name:"سن توب ليمون", price:15, img:"https://cdn.mafrservices.com/pim-content/EGY/media/product/645014/1753792204/645014_main.jpg"},
-  {name:"جهينه جوافه", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h56/h7e/26751925026846/3701_main.jpg"},
-  {name:"جهينه تفاح", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h75/h81/26751941378078/433828_main.jpg"},
-  {name:"في كولا", price:15, img:"https://m.media-amazon.com/images/I/61dmTQPVy7L._UF350,350_QL80_.jpg"},
-  {name:"في كولا توت", price:15, img:"https://mir-s3-cdn-cf.behance.net/projects/404/b3baf6172080833.Y3JvcCwxOTIzLDE1MDQsNzEsMTYx.jpg"},
-  {name:"تويست", price:15, img:"https://m.media-amazon.com/images/I/518JZuXq+rL._UF894,1000_QL80_.jpg"},
-  {name:"سباتس برتقال", price:12, img:"https://mir-s3-cdn-cf.behance.net/projects/404/141a34190709179.Y3JvcCwyMDg4LDE2MzMsMCw1NjM.jpg"},
-  {name:"مياه", price:6, img:"https://www.hayat.sa.com/hayat/img/slide1.jpg"},
-  {name:"نعناع", price:15, img:"https://t4.ftcdn.net/jpg/00/98/14/57/240_F_98145756_6KE4xOrzwxOOXBg3jNiy6ibih6LZNdYK.jpg"},
-  {name:"كركديه", price:10, img:"https://t4.ftcdn.net/jpg/03/04/01/51/240_F_304015124_A0kGlJa8qRpIEfJPPTanpClZ9dHEuqpu.jpg"},
-  {name:"ليمون نعناع", price:20, img:"https://t3.ftcdn.net/jpg/02/91/91/98/240_F_291919807_sNDDdCxZMztrZATDzG0vHpB3uYet3Zsm.jpg"},
-  {name:"في كولا سفن", price:15, img:"https://bf1af2.akinoncloudcdn.com/products/2025/03/25/356847/382ee71e-19bf-4744-b872-56d816980b0e_size3840_cropCenter.jpg"},
-  {name:"عصير مكس جهينه", price:15, img:"https://www.juhayna.com/app/uploads/2018/12/1595866123_393_2126394_chocomixside2-400x794.png"}
+  {name:"شاي", price:10, img:"https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/2AAE/production/_108962901_hi053405374.jpg.webp"}
 ];
 
 const snacks = [
-  {name:"كبك كيك تودو", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
-  {name:"كبك كيك ريد", price:15, img:"https://images.squarespace-cdn.com/content/v1/5fd9ff13116da748d1fb387c/e25cc4b1-c2dd-4886-b48e-1acc29ec5872/todo-cupcakes-2.jpg"},
-  {name:"هوهوز شيكولاته", price:10, img:"https://m.media-amazon.com/images/I/61xJwOh51DL._UF894,1000_QL80_.jpg"},
-  {name:"هوهوز فراوله", price:10, img:"https://m.media-amazon.com/images/S/aplus-media/sota/629e0dad-619f-453a-9b6d-593c81b0dafb.__CR0,0,300,300_PT0_SX300_V1___.jpg"},
-  {name:"هوهوز كريمه", price:10, img:"https://m.media-amazon.com/images/S/aplus-media/sota/629e0dad-619f-453a-9b6d-593c81b0dafb.__CR0,0,300,300_PT0_SX300_V1___.jpg"},
-  {name:"تودو بومب", price:15, img:"https://cdn.mafrservices.com/sys-master-root/h7c/h47/49986430074910/450292_main.jpg"},
-  {name:"تودو براوني", price:15, img:"https://thetasteofegypt.com/cdn/shop/products/file.png?v=1626159154"},
-  {name:"توينكز ش وك", price:10, img:"https://images-na.ssl-images-amazon.com/images/I/31dY8v2lqZL._SL500_._AC_SL500_.jpg"},
-  {name:"توينكز ف وك", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOUVFeDpsB385g70ET4FKmMxymSejHEu8_VyKmWYY6l644UvaugADdAw1VUBd1MTpplY&usqp=CAU"},
-  {name:"توينكز سوبر ش", price:10, img:"https://images-na.ssl-images-amazon.com/images/I/31dY8v2lqZL._SL500_._AC_SL500_.jpg"},
-  {name:"توينكزسوبر ف", price:10, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSOUVFeDpsB385g70ET4FKmMxymSejHEu8_VyKmWYY6l644UvaugADdAw1VUBd1MTpplY&usqp=CAU"},
+  {name:"اندومي صغير", price:5, img:"https://m.media-amazon.com/images/I/41f-8OER9bL._AC_.jpg"},
   {name:"توينكز دبل ك", price:10, img:"https://m.media-amazon.com/images/I/6144UtFOGvL._AC_SX679_.jpg"},
-  {name:"توينكز ايسنج", price:10, img:"https://m.media-amazon.com/images/I/618VfzhZ6lL._AC_SX679_.jpg"},
-  {name:"هوهوز ش كبير", price:10, img:"https://cdn.mafrservices.com/sys-master-root/hf9/h8a/50537935929374/617873_main.jpg?im=Resize=480"},
-  {name:"شيبسي روو", price:15, img:"https://images-na.ssl-images-amazon.com/images/I/618+by-jxSL._SL500_._AC_SL500_.jpg"},
-  {name:"بيك رولز ك", price:10, img:"https://m.media-amazon.com/images/I/71FBAhOZnVL._AC_SX679_.jpg"},
   {name:"بيك رولز جبنه", price:10, img:"https://m.media-amazon.com/images/I/71L42GIxo6L._UF894,1000_QL80_.jpg"},
-  {name:"بيك رولز شطه", price:10, img:"https://m.media-amazon.com/images/I/71RS95-QpsL._UF894,1000_QL80_.jpg"},
-  {name:"فرسكا فنجرز", price:10, img:"https://cdn.mafrservices.com/pim-content/EGY/media/product/636719/1733151604/636719_main.jpg"},
-  {name:"فرسكا ستكس", price:5, img:"https://m.media-amazon.com/images/I/61OUCDWipQL.jpg"},
-  {name:"اونيرو شوكو لافا", price:10, img:"https://m.media-amazon.com/images/I/71vohmufzML._UF894,1000_QL80_.jpg"},
-  {name:"اونيرو لوتس", price:10, img:"https://m.media-amazon.com/images/I/911UEaEFaUL._AC_UL480_FMwebp_QL65_.jpg"},
-  {name:"اونيرو بيضاء", price:10, img:"https://m.media-amazon.com/images/I/71a8qtaPWBL._UF894,1000_QL80_.jpg"},
-  {name:"اونيرو ساده", price:10, img:"https://m.media-amazon.com/images/I/81hNVPF+EwL._AC_UL480_FMwebp_QL65_.jpg"},
-  {name:"فرسكا ش", price:10, img:"https://www.qebox.app/qebox/wp-content/uploads/2025/05/Untitled-1-0%D9%A1-6-600x600.png"},
-  {name:"فريسكا بلوك", price:8, img:"https://cdn.mafrservices.com/sys-master-root/h98/h44/49986436595742/545032_main.jpg"},
-  {name:"مولتو شكولاته", price:10, img:"https://m.media-amazon.com/images/I/71rfa+-jI1L._UF894,1000_QL80_.jpg"},
-  {name:"مولتو فراوله", price:10, img:"https://m.media-amazon.com/images/I/51WfZ3Y5PML._UF894,1000_QL80_.jpg"},
-  {name:"مولتو ميكس", price:10, img:"https://cdn.mafrservices.com/sys-master-root/h56/h71/63006024138782/629904_main.jpg"},
-  {name:"فيشار بيتزا", price:10, img:"https://m.media-amazon.com/images/I/61STd0taBTL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار جبنه", price:10, img:"https://m.media-amazon.com/images/I/61HheiXpeXL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار جبنه متبله", price:10, img:"https://m.media-amazon.com/images/I/610q6LBSbZL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار طماطم", price:10, img:"https://m.media-amazon.com/images/I/61rKSJ3ZKHL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار شطه", price:10, img:"https://m.media-amazon.com/images/I/613w7sXm2rL._UF894,1000_QL80_.jpg"},
-  {name:"فيشار باربكيو", price:10, img:"https://m.media-amazon.com/images/I/41sBCXI4AeS._UF894,1000_QL80_.jpg"},
-  {name:"سناكس", price:10, img:"https://m.media-amazon.com/images/I/61PXQpibuBL._UF894,1000_QL80_.jpg"},
-  {name:"شيبسي soul ملح", price:10, img:"https://m.media-amazon.com/images/I/71vIsp2kr2L._AC_SY300_SX300_QL70_ML2_.jpg"},
-  {name:"اندومي كبير", price:10, img:"https://m.media-amazon.com/images/I/61I5xrMOS7L._AC_SY300_SX300_QL70_ML2_.jpg"},
-  {name:"اندومي صغير", price:5, img:"https://m.media-amazon.com/images/I/41f-8OER9bL._AC_.jpg"}
+  {name:"مولتو شيكولاتة", price:12, img:"https://cdnprod.mafretailproxy.com/sys-master-root/h58/hcf/16891898372126/1_main_600Wx600H"},
+  {name:"كروسان جبنة", price:12, img:"https://cdnprod.mafretailproxy.com/sys-master-root/h3c/had/16887062593566/1_main_600Wx600H"},
+  {name:"شيبسي كبير", price:20, img:"https://cdnprod.mafretailproxy.com/sys-master-root/ha3/h9a/16887090573342/1_main_600Wx600H"}
 ];
 
-/* ============ state و DOM refs ============ */
-let state = {}; // { name: {qty, price, type} }
-const drinksGrid = document.getElementById('drinksGrid');
-const snacksGrid = document.getElementById('snacksGrid');
-const itemsCountEl = document.getElementById('itemsCount');
-const totalAmountEl = document.getElementById('totalAmount');
-const confirmOrderBtn = document.getElementById('confirmOrder');
-const searchInput = document.getElementById('searchInput');
-const orderSummaryBox = document.getElementById('orderSummaryBox');
-const orderSummaryList = document.getElementById('orderSummaryList');
+/* الحالة */
+let cart = {};
 
-/* ============ UI helpers ============ */
-function createCardHTML(item, type){
-  const id = encodeURIComponent(item.name).replace(/%/g,'');
-  return `
-    <div class="card" data-name="${item.name}" data-type="${type}">
-      <div class="imgwrap"><img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:contain"></div>
-      <div style="font-weight:700;margin-top:6px">${item.name}</div>
-      <div style="color:var(--muted);font-weight:700">${item.price} ج.م</div>
-      <div class="qty-row">
-        <button class="qty-btn" data-action="dec" data-name="${item.name}">−</button>
-        <div class="qty-display" id="qty_${id}">0</div>
-        <button class="qty-btn" data-action="inc" data-name="${item.name}">+</button>
-      </div>
+/* DOM */
+const drinksGrid=document.getElementById('drinksGrid');
+const snacksGrid=document.getElementById('snacksGrid');
+const totalAmountEl=document.getElementById('totalAmount');
+const orderBox=document.getElementById('orderSummaryBox');
+const orderList=document.getElementById('orderSummaryList');
+const orderTotal=document.getElementById('orderTotal');
+const confirmOrderBtn=document.getElementById('confirmOrder');
+const sendOrderBtn=document.getElementById('sendOrder');
+
+/* بناء كارت */
+function createCardHTML(item){
+  const id=item.name.replace(/\s+/g,'_');
+  return `<div class="card" data-name="${item.name}" data-price="${item.price}">
+    <img src="${item.img}" alt="${item.name}">
+    <h4>${item.name}</h4>
+    <div>${item.price} ج.م</div>
+    <div class="qty-row">
+      <button class="qty-btn" onclick="changeQty('${item.name}',-1)">−</button>
+      <div class="qty-display" id="qty_${id}">0</div>
+      <button class="qty-btn" onclick="changeQty('${item.name}',1)">+</button>
     </div>
-  `;
+  </div>`;
 }
 
-function renderAll(){
-  drinksGrid.innerHTML = drinks.map(d => createCardHTML(d,'مشروب')).join('');
-  snacksGrid.innerHTML = snacks.map(s => createCardHTML(s,'سناك')).join('');
-  document.querySelectorAll('.qty-btn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      const action = btn.dataset.action;
-      const name = btn.dataset.name;
-      changeQuantity(name, action === 'inc' ? 1 : -1);
-    });
-  });
+/* عرض المنتجات */
+drinksGrid.innerHTML = drinks.map(createCardHTML).join('');
+snacksGrid.innerHTML = snacks.map(createCardHTML).join('');
+
+/* التحكم بالكمية */
+function changeQty(name,delta){
+  if(!cart[name]) cart[name]={qty:0,price:findPrice(name)};
+  cart[name].qty=Math.max(0,cart[name].qty+delta);
+  document.getElementById('qty_'+name.replace(/\s+/g,'_')).textContent=cart[name].qty;
+  updateTotal();
 }
 
+/* إيجاد السعر */
 function findPrice(name){
-  const f1 = drinks.find(d=>d.name===name);
-  if(f1) return f1.price;
-  const f2 = snacks.find(s=>s.name===name);
-  if(f2) return f2.price;
-  return 0;
-}
-function findType(name){
-  if (drinks.find(d=>d.name===name)) return 'مشروب';
-  if (snacks.find(s=>s.name===name)) return 'سناك';
-  return '';
+  return (drinks.find(x=>x.name===name)?.price)||(snacks.find(x=>x.name===name)?.price)||0;
 }
 
-function changeQuantity(name, delta){
-  if(!state[name]) state[name] = { qty:0, price: findPrice(name), type: findType(name) };
-  state[name].qty = Math.max(0, state[name].qty + delta);
-  const id = encodeURIComponent(name).replace(/%/g,'');
-  const el = document.getElementById('qty_'+id);
-  if(el) el.textContent = state[name].qty;
-  updateSummary();
+/* تحديث الإجمالي */
+function updateTotal(){
+  let t=0;
+  for(const [n,v] of Object.entries(cart)){t+=v.qty*v.price;}
+  totalAmountEl.textContent=t;
 }
 
-function updateSummary(){
-  let total = 0, itemsCount = 0;
-  for(const [name,obj] of Object.entries(state)){
-    if(obj.qty <= 0) continue;
-    itemsCount += obj.qty;
-    total += obj.qty * obj.price;
-  }
-  itemsCountEl.textContent = itemsCount;
-  totalAmountEl.textContent = total;
-}
-
-/* Build items array: [{name, qty, unitPrice, lineTotal}, ...] */
-function buildItemsArray(){
-  const items = [];
-  for(const [name,obj] of Object.entries(state)){
-    if(obj.qty <= 0) continue;
-    const unit = obj.price || 0;
-    const qty = obj.qty;
-    const line = unit * qty;
-    items.push({ name: name, qty: qty, unitPrice: unit, lineTotal: line });
-  }
-  return items;
-}
-
-function buildOrderSummaryText(){
-  const items = buildItemsArray();
-  const lines = items.map(it => `${it.name} x${it.qty} — ${it.lineTotal} ج.م (السعر: ${it.unitPrice} ج.م)`);
-  const total = items.reduce((s,it)=>s+it.lineTotal,0);
-  return { lines, total, items };
-}
-
-/* ============ إرسال الطلب (FormData) ============ */
-confirmOrderBtn.addEventListener('click', async ()=>{
-  const { lines, total, items } = buildOrderSummaryText();
-  if(lines.length === 0){ alert('السلة فارغة — اضف منتجات أولاً'); return; }
-
-  const customerName = prompt('ادخل اسم العميل (اختياري):') || 'عميل مجهول';
-
-  // عرض ملخص
-  orderSummaryList.innerHTML = lines.map(l=>`<div>${l}</div>`).join('') + `<div style="margin-top:10px;font-weight:bold;color:var(--accent)">الإجمالي: ${total} ج.م</div>`;
-  orderSummaryBox.style.display = 'block';
-  orderSummaryBox.scrollIntoView({behavior:'smooth', block:'center'});
-
-  // payload: نرسل items كـ JSON string داخل FormData
-  const payload = {
-    name: customerName.trim(),
-    items: items, // مصفوفة
-    total: total
-  };
-
-  const form = new FormData();
-  form.append('name', payload.name);
-  form.append('total', String(payload.total));
-  form.append('items', JSON.stringify(payload.items)); // مهم: server سيحلّل هذا الحقل
-
-  // UI: تعطيل الزر ومؤشر تحميل
-  confirmOrderBtn.disabled = true;
-  confirmOrderBtn.classList.add('btn-disabled');
-  const loader = document.createElement('span');
-  loader.className = 'loader';
-  loader.id = 'sendingLoader';
-  confirmOrderBtn.appendChild(loader);
-
-  try{
-    const res = await fetch(WEB_APP_URL, { method: 'POST', body: form });
-    if(!res.ok){
-      const text = await res.text().catch(()=> '');
-      console.error('Server responded with status', res.status, text);
-      alert('حدث خطأ أثناء الإرسال. رمز الحالة: ' + res.status + '\nراجع Console.');
-      return;
+/* عرض تفاصيل الطلب قبل التأكيد */
+confirmOrderBtn.onclick=()=>{
+  const lines=[];
+  let total=0;
+  for(const [name,v] of Object.entries(cart)){
+    if(v.qty>0){
+      const subtotal=v.qty*v.price;
+      lines.push(`${name} × ${v.qty} — ${subtotal} ج.م`);
+      total+=subtotal;
     }
-    const result = await res.json().catch(()=> null);
-    if(result && result.status === 'success'){
-      alert('✅ تم إرسال الطلب بنجاح! رقم الطلب: ' + (result.orderId || '—'));
-      // reset
-      state = {};
-      document.querySelectorAll('[id^="qty_"]').forEach(el=>el.textContent = '0');
-      updateSummary();
-      orderSummaryBox.style.display = 'none';
-    } else {
-      console.error('Server returned error', result);
-      alert('خطأ من الخادم: ' + (result && result.message ? result.message : 'غير معروف') + '\nراجع Console.');
-    }
-  } catch(err){
-    console.error('Fetch error', err);
-    alert('فشل الاتصال بالخادم. تحقق من الإنترنت وإعداد Web App.\nانظر Console للمزيد.');
-  } finally {
-    confirmOrderBtn.disabled = false;
-    confirmOrderBtn.classList.remove('btn-disabled');
-    const existing = document.getElementById('sendingLoader');
-    if(existing) existing.remove();
   }
-});
+  if(!lines.length){alert("لم تُضف أي منتجات بعد!");return;}
+  orderList.innerHTML=lines.map(l=>`<div>${l}</div>`).join('');
+  orderTotal.textContent=`الإجمالي: ${total} ج.م`;
+  orderBox.style.display='block';
+  orderBox.scrollIntoView({behavior:'smooth'});
+};
 
-/* بحث */
-searchInput.addEventListener('input', (e)=>{
-  const q = e.target.value.trim().toLowerCase();
-  document.querySelectorAll('.card').forEach(card=>{
-    const name = (card.dataset.name || '').toLowerCase();
-    card.style.display = name.includes(q) ? '' : 'none';
-  });
-});
+/* إرسال إلى Google Sheet (عمودي) */
+sendOrderBtn.onclick=async()=>{
+  const customer=prompt("أدخل اسم العميل:")||"عميل مجهول";
+  const orderRows=[];
+  let total=0;
+  for(const [name,v] of Object.entries(cart)){
+    if(v.qty>0){
+      const subtotal=v.qty*v.price;
+      total+=subtotal;
+      orderRows.push({name,qty:v.qty,price:v.price,total:subtotal});
+    }
+  }
+  if(!orderRows.length){alert("السلة فارغة!");return;}
 
-/* init */
-renderAll();
-updateSummary();
+  // إرسال كل منتج كصف مستقل
+  for(const row of orderRows){
+    const form=new FormData();
+    form.append("customer",customer);
+    form.append("product",row.name);
+    form.append("quantity",row.qty);
+    form.append("price",row.price);
+    form.append("subtotal",row.total);
+    form.append("orderTotal",total);
+    await fetch(WEB_APP_URL,{method:"POST",body:form}).catch(console.error);
+  }
 
+  alert("✅ تم إرسال الطلب إلى جوجل شيت بنجاح!");
+  orderBox.style.display='none';
+  cart={};
+  document.querySelectorAll('.qty-display').forEach(e=>e.textContent='0');
+  updateTotal();
+};
 </script>
+
 </body>
 </html>
