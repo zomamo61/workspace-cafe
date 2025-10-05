@@ -43,6 +43,9 @@
     #orderSummaryList div:last-child{border-bottom:none}
     .cart-count{background:#fff;color:#111;padding:4px 8px;border-radius:999px;font-weight:800}
     .spacer{height:88px}
+    .btn-disabled{opacity:0.6;cursor:not-allowed}
+    .loader{display:inline-block;border:3px solid rgba(0,0,0,0.0);border-left-color:rgba(0,0,0,0.1);width:18px;height:18px;border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-left:8px;background:linear-gradient(90deg,#fff,#ddd);opacity:0.9}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
@@ -92,10 +95,10 @@
 </div>
 
 <script>
-/* ============ رابط Web App (انسخ الرابط الذي نشرته) ============ */
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWFGU_2iJ_g0AA3DD7Ddh4ll1_9V6KWCFAF8Cj2_kETMM7NG92OQZ6jE8Ldm1gDx_7mQ/exec";
+/* ============ رابط Web App (ضع الرابط الجديد هنا) ============ */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby67YzkcDoAMAZnUQYjT7CCM7YSljdgRTA_r_wWTTSPZd2B_gwgo_y-o2aZ5ywa6-GxPg/exec";
 
-/* ============ منتجات: ضع هنا كل المنتجات (أو عدّل كما تريد) ============ */
+/* ============ منتجات ============ */
 const drinks = [
   {name:"كوفي بريك 2/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
   {name:"كوفي بريك3/1", price:25, img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop"},
@@ -183,7 +186,6 @@ const searchInput = document.getElementById('searchInput');
 const orderSummaryBox = document.getElementById('orderSummaryBox');
 const orderSummaryList = document.getElementById('orderSummaryList');
 
-/* ============ وظائف مساعدة ============ */
 function createCardHTML(item, type){
   const id = encodeURIComponent(item.name).replace(/%/g,'');
   return `
@@ -259,14 +261,14 @@ function buildOrderSummaryText(){
   return { lines, total };
 }
 
-/* ============ حدث التأكيد (إرسال إلى Web App) ============ */
+/* ============ حدث التأكيد (إرسال إلى Web App باستخدام FormData لتجنب preflight) ============ */
 confirmOrderBtn.addEventListener('click', async ()=>{
   const summary = buildOrderSummaryText();
   if(summary.lines.length === 0){ alert('السلة فارغة — اضف منتجات أولاً'); return; }
 
   const customerName = prompt('ادخل اسم العميل (اختياري):') || 'عميل مجهول';
 
-  // عرض الأسفل
+  // عرض ملخص الطلب
   orderSummaryList.innerHTML = summary.lines.map(l=>`<div>${l}</div>`).join('') +
                                `<div style="margin-top:10px;font-weight:bold;color:var(--accent)">الإجمالي: ${summary.total} ج.م</div>`;
   orderSummaryBox.style.display = 'block';
@@ -280,20 +282,37 @@ confirmOrderBtn.addEventListener('click', async ()=>{
     total: summary.total
   };
 
+  // بناء FormData (لا نحدد Content-Type حتى لا يحصل preflight)
+  const form = new FormData();
+  form.append('name', payload.name);
+  form.append('details', payload.details);
+  form.append('type', payload.type);
+  form.append('price', String(payload.price));
+  form.append('total', String(payload.total));
+
+  // تعطيل الزر واضافة مؤشر تحميل
+  confirmOrderBtn.disabled = true;
+  confirmOrderBtn.classList.add('btn-disabled');
+  const loader = document.createElement('span');
+  loader.className = 'loader';
+  loader.id = 'sendingLoader';
+  confirmOrderBtn.appendChild(loader);
+
   try{
     const res = await fetch(WEB_APP_URL, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+      body: form
+      // لا تضف headers: {'Content-Type': 'application/json'}  -> يسبب preflight
     });
 
     if(!res.ok){
       const text = await res.text().catch(()=> '');
       console.error('Server responded with status', res.status, text);
-      alert('حدث خطأ أثناء الإرسال. رمز الحالة: ' + res.status);
+      alert('حدث خطأ أثناء الإرسال. رمز الحالة: ' + res.status + '\nتحقق من Console للمزيد.');
       return;
     }
 
+    // Google Apps Script عادة يعيد JSON string، لذا نجرب قراءته
     const result = await res.json().catch(()=> null);
     if(result && result.status === 'success'){
       alert('✅ تم إرسال الطلب بنجاح! رقم الطلب: ' + (result.orderId || '—'));
@@ -301,13 +320,20 @@ confirmOrderBtn.addEventListener('click', async ()=>{
       state = {};
       document.querySelectorAll('[id^="qty_"]').forEach(el=>el.textContent = '0');
       updateSummary();
+      orderSummaryBox.style.display = 'none';
     } else {
       console.error('Server returned error', result);
-      alert('حدث خطأ من الخادم: ' + (result && result.message ? result.message : 'غير معروف'));
+      alert('حدث خطأ من الخادم: ' + (result && result.message ? result.message : 'الاستجابة غير مفهومة') + '\nراجع Console.');
     }
   } catch(err){
     console.error('Fetch error', err);
-    alert('فشل الاتصال بالخادم. تحقق من الإنترنت وإعداد Web App.');
+    alert('فشل الاتصال بالخادم. تحقق من الإنترنت وإعداد Web App.\nانظر Console للمزيد من التفاصيل.');
+  } finally {
+    // إعادة تمكين الزر وإزالة مؤشر التحميل
+    confirmOrderBtn.disabled = false;
+    confirmOrderBtn.classList.remove('btn-disabled');
+    const existing = document.getElementById('sendingLoader');
+    if(existing) existing.remove();
   }
 });
 
