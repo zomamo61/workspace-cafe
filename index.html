@@ -1,6 +1,27 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+  <style>
+  .success-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+    padding: 20px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 9999;
+  }
+  .success-message.show {
+    opacity: 1;
+  }
+</style>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>قائمة الكافيه</title>
@@ -11,7 +32,9 @@
       --snack-bg:#ede9fe; --snack-color:#6d28d9;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:'Tajawal','Segoe UI',sans-serif;background:var(--bg);color:#111}
+    body<div id="successMessage" class="success-message">✅ تم تأكيد الطلب بنجاح!</div>
+
+    {margin:0;font-family:'Tajawal','Segoe UI',sans-serif;background:var(--bg);color:#111}
 
     .container{max-width:1200px;margin:16px auto;padding:12px}
     header{background:linear-gradient(180deg,var(--header),#6a2304);color:#fff;padding:18px;border-radius:8px;position:relative}
@@ -314,35 +337,39 @@
       totalPriceEl.textContent = sum + ' جنية';
     }
 
-    // confirm & send to Google Apps Script (as form-urlencoded to avoid preflight)
-    confirmOrder.addEventListener('click', ()=> {
-      if(cart.length === 0) { alert('السلة فارغة'); return; }
-      const name = customerName.value.trim();
-      if(!name) { alert('من فضلك أدخل اسمك لإتمام الطلب'); return; }
+    confirmOrder.addEventListener('click', () => {
+  if (cart.length === 0) return; // لو السلة فاضية ما يعمل شيء
 
-      const total = cart.reduce((s,i)=>s + i.price * i.qty, 0);
-      const details = cart.map(i => `${i.qty}× ${i.name} (${i.price}ج)` ).join(' | ');
+  const name = customerName.value.trim() || "بدون اسم";
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const details = cart.map(i => `${i.qty}× ${i.name} (${i.price}ج)` ).join(' | ');
 
-      // form-encoded body to avoid preflight CORS issues when sending from file:// or localhost
-      const form = new URLSearchParams();
-      form.append('name', name);
-      form.append('details', details);
-      form.append('total', total);
+  const form = new FormData();
+  form.append('name', name);
+  form.append('details', details);
+  form.append('total', total);
 
-     fetch(GSA_URL, {
-  method: 'POST',
-  body: form
-})
-.then(() => {
-  alert('✅ تم إرسال الطلب بنجاح!');
+  // دالة لعرض رسالة نجاح لطيفة
+  function showSuccess() {
+    const msg = document.getElementById('successMessage');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 1500);
+  }
+
+  // إرسال الطلب (بدون قراءة الرد)
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(GSA_URL, form);
+  } else {
+    fetch(GSA_URL, { method: 'POST', body: form, mode: 'no-cors' }).catch(()=>{});
+  }
+
+  // تنظيف السلة وبدء طلب جديد فورًا
+  showSuccess();
   cart = [];
   badge.textContent = 0;
   customerName.value = '';
   populateOrder();
   closeModalFn();
-})
-.catch(err => {
-  alert('⚠️ فشل الإرسال: ' + err);
 });
 
     });
@@ -350,3 +377,4 @@
   </script>
 </body>
 </html>
+
